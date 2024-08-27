@@ -28,13 +28,25 @@
       margin-top: 20px;
       font-size: 1.2em;
       color: #333;
-      white-space: pre-wrap; /* Ensure whitespace is preserved */
     }
     .error {
       color: red;
     }
+    table {
+      width: 60%;
+      margin: 0 auto;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
     .assignment {
-      margin: 10px 0;
+      text-align: center;
     }
   </style>
   <script>
@@ -51,8 +63,7 @@
         displayResult(result); // Pass result to display function
       } catch (error) {
         console.error('Error fetching result:', error);
-        document.getElementById('result').innerText = 'Error occurred. Please try again.';
-        document.getElementById('result').classList.add('error');
+        document.getElementById('result').innerHTML = '<p class="error">Error occurred. Please try again.</p>';
       }
     }
 
@@ -62,15 +73,41 @@
       if (result.startsWith('Assigned seats')) {
         const assignments = result.substring(result.indexOf(':') + 1).trim(); // Remove prefix
         const assignmentsArray = assignments.split(', '); // Split by comma
-        assignmentsArray.forEach(assignment => {
-          const [name, seat] = assignment.split(': '); // Split each assignment
-          const assignmentElement = document.createElement('div');
-          assignmentElement.className = 'assignment';
-          assignmentElement.innerText = `${name}: ${seat}`;
-          resultElement.appendChild(assignmentElement);
+
+        // Create a table
+        const table = document.createElement('table');
+        const headerRow = document.createElement('tr');
+        const nameHeader = document.createElement('th');
+        const seatHeader = document.createElement('th');
+        nameHeader.textContent = 'Name';
+        seatHeader.textContent = 'Seat';
+        headerRow.appendChild(nameHeader);
+        headerRow.appendChild(seatHeader);
+        table.appendChild(headerRow);
+
+        // Add rows to table
+        assignmentsArray.forEach((assignment, index) => {
+          if (index % 2 === 0) {
+            const row = document.createElement('tr');
+            const nameCell = document.createElement('td');
+            const seatCell = document.createElement('td');
+            const [name, seat] = assignment.split(': '); // Split each assignment
+
+            nameCell.className = 'assignment';
+            seatCell.className = 'assignment';
+
+            nameCell.textContent = name;
+            seatCell.textContent = seat;
+
+            row.appendChild(nameCell);
+            row.appendChild(seatCell);
+            table.appendChild(row);
+          }
         });
+
+        resultElement.appendChild(table);
       } else {
-        resultElement.innerText = result; // Handle error or invalid result
+        resultElement.innerHTML = `<p class="error">${result}</p>`; // Handle error or invalid result
       }
     }
   </script>
