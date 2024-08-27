@@ -28,22 +28,6 @@
       margin-top: 20px;
       font-size: 1.2em;
       color: #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .result-item {
-      display: flex;
-      justify-content: space-between;
-      width: 50%;
-      margin: 10px 0;
-    }
-    .result-item div {
-      width: 48%;
-      padding: 5px;
-      border: 1px solid #ddd;
-      background-color: #fff;
-      text-align: center;
     }
     .error {
       color: red;
@@ -53,35 +37,22 @@
     async function fetchResult(option) {
       try {
         const url = `https://script.google.com/macros/s/AKfycbzaPUGGWZiR8JHykI7VEskwMsis9CbBeSdK-bfipzyFcGuRse7V3LDQ7ruaiv40FVdk7A/exec?yesOrNo=${option}`;
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          method: 'GET',
+          mode: 'cors', // Use 'cors' for cross-origin requests
+        });
         
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
         const result = await response.text(); // Use .text() if response is plain text
-
-        // Parse the result into a list format
-        const resultArray = result.split(',').map(item => item.trim().split(': '));
-        const resultDiv = document.getElementById('result');
-        
-        // Clear previous results
-        resultDiv.innerHTML = '';
-
-        // Populate the results
-        resultArray.forEach(([name, seat]) => {
-          resultDiv.innerHTML += `
-            <div class="result-item">
-              <div>${name}</div>
-              <div>${seat}</div>
-            </div>
-          `;
-        });
-
-        resultDiv.classList.remove('error');
+        document.getElementById('result').innerText = result;
+        document.getElementById('result').classList.remove('error');
       } catch (error) {
         console.error('Error fetching result:', error);
-        document.getElementById('result').innerHTML = '<p class="error">Error occurred. Please try again.</p>';
+        document.getElementById('result').innerText = 'Error occurred. Please try again.';
+        document.getElementById('result').classList.add('error');
       }
     }
   </script>
@@ -109,3 +80,4 @@
   </div>
 </body>
 </html>
+
