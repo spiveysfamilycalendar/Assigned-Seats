@@ -45,22 +45,26 @@
   <script>
     async function fetchResult(option) {
       try {
-        const url = `https://script.google.com/macros/s/AKfycbzaPUGGWZiR8JHykI7VEskwMsis9CbBeSdK-bfipzyFcGuRse7V3LDQ7ruaiv40FVdk7A/exec?yesOrNo=${option}`;
+        const url = `https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?yesOrNo=${option}`;
         const response = await fetch(url, {
           method: 'GET',
           mode: 'cors',
         });
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const result = await response.json(); // Expecting JSON array
+        const result = await response.json();
+        if (result.error) {
+          throw new Error(result.error);
+        }
+
         updateTable(result);
         document.getElementById('result').classList.remove('error');
       } catch (error) {
         console.error('Error fetching result:', error);
-        document.getElementById('result').innerText = 'Error occurred. Please try again.';
+        document.getElementById('result').innerText = 'Error occurred: ' + error.message;
         document.getElementById('result').classList.add('error');
       }
     }
@@ -69,15 +73,13 @@
       const tableBody = document.getElementById('table-body');
       tableBody.innerHTML = ''; // Clear previous results
 
-      const names = ['Julius', 'Noah', 'Caden'];
-
-      names.forEach((name, index) => {
+      seatAssignments.forEach(item => {
         const row = document.createElement('tr');
         const nameCell = document.createElement('td');
         const seatCell = document.createElement('td');
 
-        nameCell.innerText = name;
-        seatCell.innerText = seatAssignments[index] || 'Not Assigned';
+        nameCell.innerText = item.name;
+        seatCell.innerText = item.seat;
 
         row.appendChild(nameCell);
         row.appendChild(seatCell);
