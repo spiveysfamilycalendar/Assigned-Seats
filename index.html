@@ -39,7 +39,7 @@
       color: red;
     }
     table {
-      width: 60%;
+      width: 30%;
       margin: 20px auto;
       border-collapse: collapse;
     }
@@ -51,7 +51,7 @@
     th {
       background-color: #f2f2f2;
     }
-    .assignment {
+    td {
       text-align: center;
     }
   </style>
@@ -77,7 +77,7 @@
       const resultElement = document.getElementById('result');
       resultElement.innerHTML = ''; // Clear previous results
 
-      // Assuming the result format is "Name: Seat, Name: Seat, ..."
+      // Assuming the result format is "Julius: Seat1, Noah: Seat2, Caden: Seat3"
       const assignmentsArray = result.split(', '); // Split by comma
 
       // Create a table
@@ -98,9 +98,6 @@
         const row = document.createElement('tr');
         const nameCell = document.createElement('td');
         const seatCell = document.createElement('td');
-
-        nameCell.className = 'assignment';
-        seatCell.className = 'assignment';
 
         nameCell.textContent = name;
         seatCell.textContent = seat;
