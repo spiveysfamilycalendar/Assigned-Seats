@@ -24,19 +24,10 @@
       margin: 0 20px;
       cursor: pointer;
     }
-    table {
-      margin: 20px auto;
-      border-collapse: collapse;
-      width: 80%;
-      max-width: 600px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #f2f2f2;
+    #result {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #333;
     }
     .error {
       color: red;
@@ -45,46 +36,24 @@
   <script>
     async function fetchResult(option) {
       try {
-        const url = `https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?yesOrNo=${option}`;
+        const url = `https://script.google.com/macros/s/AKfycbzaPUGGWZiR8JHykI7VEskwMsis9CbBeSdK-bfipzyFcGuRse7V3LDQ7ruaiv40FVdk7A/exec?yesOrNo=${option}`;
         const response = await fetch(url, {
           method: 'GET',
-          mode: 'cors',
+          mode: 'cors', // Use 'cors' for cross-origin requests
         });
-
+        
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const result = await response.json();
-        if (result.error) {
-          throw new Error(result.error);
-        }
-
-        updateTable(result);
+        const result = await response.text(); // Use .text() if response is plain text
+        document.getElementById('result').innerText = result;
         document.getElementById('result').classList.remove('error');
       } catch (error) {
         console.error('Error fetching result:', error);
-        document.getElementById('result').innerText = 'Error occurred: ' + error.message;
+        document.getElementById('result').innerText = 'Error occurred. Please try again.';
         document.getElementById('result').classList.add('error');
       }
-    }
-
-    function updateTable(seatAssignments) {
-      const tableBody = document.getElementById('table-body');
-      tableBody.innerHTML = ''; // Clear previous results
-
-      seatAssignments.forEach(item => {
-        const row = document.createElement('tr');
-        const nameCell = document.createElement('td');
-        const seatCell = document.createElement('td');
-
-        nameCell.innerText = item.name;
-        seatCell.innerText = item.seat;
-
-        row.appendChild(nameCell);
-        row.appendChild(seatCell);
-        tableBody.appendChild(row);
-      });
     }
   </script>
 </head>
@@ -106,19 +75,8 @@
       aria-label="Assign Seats No"
     />
   </div>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Seat</th>
-      </tr>
-    </thead>
-    <tbody id="table-body">
-      <!-- Table rows will be populated here -->
-    </tbody>
-  </table>
   <div id="result">
-    <!-- Error or success messages will be displayed here -->
+    <!-- Result will be displayed here -->
   </div>
 </body>
 </html>
