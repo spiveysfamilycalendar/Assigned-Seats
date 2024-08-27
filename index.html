@@ -28,31 +28,49 @@
       margin-top: 20px;
       font-size: 1.2em;
       color: #333;
+      white-space: pre-wrap; /* Ensure whitespace is preserved */
     }
     .error {
       color: red;
+    }
+    .assignment {
+      margin: 10px 0;
     }
   </style>
   <script>
     async function fetchResult(option) {
       try {
         const url = `https://script.google.com/macros/s/AKfycbzaPUGGWZiR8JHykI7VEskwMsis9CbBeSdK-bfipzyFcGuRse7V3LDQ7ruaiv40FVdk7A/exec?yesOrNo=${option}`;
-        const response = await fetch(url, {
-          method: 'GET',
-          mode: 'cors', // Use 'cors' for cross-origin requests
-        });
-        
+        const response = await fetch(url);
+
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const result = await response.text(); // Use .text() if response is plain text
-        document.getElementById('result').innerText = result;
-        document.getElementById('result').classList.remove('error');
+        const result = await response.text(); // Fetch response as text
+        displayResult(result); // Pass result to display function
       } catch (error) {
         console.error('Error fetching result:', error);
         document.getElementById('result').innerText = 'Error occurred. Please try again.';
         document.getElementById('result').classList.add('error');
+      }
+    }
+
+    function displayResult(result) {
+      const resultElement = document.getElementById('result');
+      resultElement.innerHTML = ''; // Clear previous results
+      if (result.startsWith('Assigned seats')) {
+        const assignments = result.substring(result.indexOf(':') + 1).trim(); // Remove prefix
+        const assignmentsArray = assignments.split(', '); // Split by comma
+        assignmentsArray.forEach(assignment => {
+          const [name, seat] = assignment.split(': '); // Split each assignment
+          const assignmentElement = document.createElement('div');
+          assignmentElement.className = 'assignment';
+          assignmentElement.innerText = `${name}: ${seat}`;
+          resultElement.appendChild(assignmentElement);
+        });
+      } else {
+        resultElement.innerText = result; // Handle error or invalid result
       }
     }
   </script>
