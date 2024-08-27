@@ -92,16 +92,17 @@
         headerRow.appendChild(seatHeader);
         table.appendChild(headerRow);
 
-        // Add rows to table
-        Object.keys(assignments).forEach(name => {
-          const seat = assignments[name];
+        // Define static names
+        const names = ['Julius', 'Noah', 'Caden'];
 
+        // Add rows to table
+        names.forEach(name => {
           const row = document.createElement('tr');
           const nameCell = document.createElement('td');
           const seatCell = document.createElement('td');
 
           nameCell.textContent = name;
-          seatCell.textContent = seat;
+          seatCell.textContent = assignments[name] || 'Not assigned';
 
           row.appendChild(nameCell);
           row.appendChild(seatCell);
