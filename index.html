@@ -37,10 +37,13 @@
     async function fetchResult(option) {
       try {
         const url = `https://script.google.com/macros/s/AKfycbzaPUGGWZiR8JHykI7VEskwMsis9CbBeSdK-bfipzyFcGuRse7V3LDQ7ruaiv40FVdk7A/exec?yesOrNo=${option}`;
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          method: 'GET',
+          mode: 'cors', // Use 'cors' for cross-origin requests
+        });
         
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
         const result = await response.text(); // Use .text() if response is plain text
